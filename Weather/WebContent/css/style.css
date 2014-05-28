@@ -1,0 +1,47 @@
+body {
+    color:#1d4866;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif ; font-size:12px;
+}
+
+label {
+    padding:5px;
+}
+.criteriaInput {
+    width:210px;
+    height:15px;
+    margin:4px;
+}
+.criteriaSelect {
+    width:215px;
+    margin:4px;
+}
+.header {
+    width:494px;
+    height:120px;
+    background:url(../images/header_bg.jpg) no-repeat left top;
+    text-align:left;
+}
+.head{
+    padding:20px 10px 10px 180px;
+}
+.add {
+    background-image: url(../images/add.gif) !important;
+}
+
+.edit {
+    background-image: url(../images/edit.gif) !important;
+}
+
+.save {
+    background-image: url(../images/save.gif) !important;
+}
+
+.delete {
+    background-image: url(../images/delete.png) !important;
+}
+
+.copy {
+	background-image: url(../images/copy.png) !important;
+}

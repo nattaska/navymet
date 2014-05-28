@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	
+	<definition name=".empty" template="/WEB-INF/jsp/tiles/emptyTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/tiles/masterHeader.jsp"/>
+	</definition>
+	
+	<definition name=".master" template="/WEB-INF/jsp/tiles/masterTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/tiles/masterHeader.jsp"/>
+		<put-attribute name="menu" value="/WEB-INF/jsp/tiles/menu.jsp"/>
+	</definition>
+	
+	<definition name="/main.tiles" extends=".master">
+		<put-attribute name="title" value="ระบบตรวจสภาพอากาศ"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/main.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="/accessDenied.tiles" extends=".master">
+		<put-attribute name="title" value="ระบบตรวจสภาพอากาศ"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/accessDenied.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="/login.tiles" extends=".empty">
+		<put-attribute name="title" value="ระบบตรวจสภาพอากาศ"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/login.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="/SSQADM001.tiles" extends=".master">
+		<put-attribute name="title" value="User Maintenance"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/SSQADM001.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="/SSQADM002.tiles" extends=".master">
+		<put-attribute name="title" value="ข้อมูลผลตรวจสภาพอากาศ"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/SSQADM002.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="/SSQADM003.tiles" extends=".master">
+		<put-attribute name="title" value="ข้อมูลผลตรวจสภาพอากาศสัตหีบ"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/SSQADM003.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="/SSQADM004.tiles" extends=".master">
+		<put-attribute name="title" value="ข้อมูลผลการตรวจอากาศจากสถานีทั่วโลก"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/SSQADM004.jsp"></put-attribute>
+	</definition>
+	
+	<definition name="/SSQADM005.tiles" extends=".master">
+		<put-attribute name="title" value="ข้อมูลผลการจำลองคลื่น"/>
+		<put-attribute name="content" value="/WEB-INF/jsp/SSQADM005.jsp"></put-attribute>
+	</definition>
+	
+
+</tiles-definitions>

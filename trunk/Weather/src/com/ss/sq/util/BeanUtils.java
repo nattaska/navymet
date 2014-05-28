@@ -14,7 +14,7 @@ public class BeanUtils {
 		return (b);
 
 	}
-
+ 
 	public static boolean isEmpty(StringBuilder st){
 		boolean b = true;
 		if(st!=null && st.toString().trim().length()>0){

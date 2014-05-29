@@ -26,7 +26,7 @@ Ext.onReady(function(){
 	            Ext.Msg.alert('Error', 'No Data Found.');
 	        }
 	    }, function (store, response, options, e) {
-	        Ext.Msg.alert(response.messageHeader, response.message);
+	    	Ext.Msg.alert('Error','Time out 5 minute.');
 	    });
 	};
 	

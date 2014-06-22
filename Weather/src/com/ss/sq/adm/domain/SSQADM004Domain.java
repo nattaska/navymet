@@ -42,7 +42,7 @@ public class SSQADM004Domain extends SSQADM002 {
 			" COALESCE(gwsvv,'') as gwsvv,COALESCE(gwsws,'') as gwsws,COALESCE(gwswd,'') as gwswd,COALESCE(gwsrain24,'') as gwsrain24,COALESCE(pww.pmdcmnt,'') gwsww," +
 			" COUNT (*) OVER (PARTITION BY 'X') cnt_all,row_number() over(ORDER BY gwsdat, stn.pmdv2, stn.pmdedesc, stn.pmdv3, stn.pmdv4) as rec" +
 			" from gws join prmdtl stn on stn.pmdtbno=5 and stn.pmdentcd=gwsstn left join prmdtl pww on pww.pmdtbno=7 and pww.pmdentcd=gwsww left join prmdtl pwd on pwd.pmdtbno=8 and pwd.pmdentcd=gwswd ";
-	String SQL_GEN_HDR = "select ''''||pmdedesc||'''' from prmdtl where pmdtbno=4 and pmdentcd ";
+	String SQL_GEN_HDR = "select pmdedesc from prmdtl where pmdtbno=4 and pmdentcd ";
 	String SQL_GEN_HDR_H = "select prmdtl.pmdv1 from prmdtl where pmdtbno=4 and pmdentcd ";
 	String SQL_SEL_COUNTRY = "SELECT DISTINCT pmdv1,pmdv2 FROM prmdtl WHERE pmdtbno = 5 order by pmdv2";
 	public StoreData findValiableStoreData() throws SQLException{
@@ -251,7 +251,7 @@ public class SSQADM004Domain extends SSQADM002 {
 		return pagingGridData;	
 	}
 	
-	public List<SSQADM004> genGwsDetail(SSQADM004 ssqadm) throws SQLException{
+	public List<SSQADM004> genGwsDetail(SSQADM004 ssqadm, String fileName) throws SQLException{
 		
 		List<SSQADM004> list = new ArrayList<SSQADM004>();
 		String startDate = ssqadm.getStartDate();
@@ -299,52 +299,28 @@ public class SSQADM004Domain extends SSQADM002 {
 			strbuilder.append(" AND stn.pmdentcd in ("+ssqadm.getStation()+") ");
 		}
 	    		
-	    	String mergecolmHdrdata = "'DATE TIME'||','||'Country'||','||'Station'||','||'Lattitude'||','||'Lontitude'";
-	    	String mergecolmHdr= "gwsdat||','||\"Country\"||','||\"Station\"||','||\"Lattitude\"||','||\"Lontitude\"";
+	    	String mergecolmHdr= "gwsdat AS \"DATE TIME\",\"Country\",\"Station\",\"Lattitude\",\"Lontitude\"";
 	    	String val = ssqadm.getGwsval();
-	    	boolean flag =true;
+
     		List<SSQADM004> colmnHdr  = extratColumforGenerateHdr(val,"0");
-    	    for(int i=0; i<=colmnHdr.size()-1;i++){		    	
-    	    	mergecolmHdrdata = mergecolmHdrdata+" ||\',\'|| "+colmnHdr.get(i).getColumHdr();
-    	    	flag = false;
+    	    if(colmnHdr.size()>0){		    	
+    	    	List<SSQADM004> colmnHdrdata  = extratColumforGenerateHdr(val,"1");
+	    	    for(int i=0; i<=colmnHdrdata.size()-1;i++){		    	
+	    	    	mergecolmHdr = mergecolmHdr+", "+colmnHdrdata.get(i).getColumHdr()+" AS \""+colmnHdr.get(i).getColumHdr()+"\"";
+	    	    }
     	    }		
-    	    
-    	    if(!flag){
-    	    	 List<SSQADM004> colmnHdrdata  = extratColumforGenerateHdr(val,"1");
-    	    	    for(int i=0; i<=colmnHdrdata.size()-1;i++){		    	
-    	    	    	mergecolmHdr = mergecolmHdr+" ||\',\'|| "+colmnHdrdata.get(i).getColumHdr();
-    	    	 }
-    	    }
-    	   
-	    
-    	    if(flag){
-    	    	mergecolmHdr = mergecolmHdr+" ||','||gwspp||','||gwstt||','||gwstd||','||gwstmax||','||gwstmin||','||gwscc||','||gwsvv||','||gwsws||','||gwswd||','||gwsrain24||','||gwsww ";
-    	    	mergecolmHdrdata = mergecolmHdrdata+"||','|| 'Pressure' ||','|| 'Dry Bulb Temperature' ||','|| 'Dew Bulb Temperature' ||','|| 'Maximum Temperature' ||','|| 'Minimum Temperature' ||','|| 'Total Cloud Cover' ||','|| 'Visibility' ||','|| 'Wind Speed' ||','|| 'Wind Direction' ||','|| '24 Hours Precipitation' ||','|| 'Present Weather' ";
-    	    }
-	    		
+    	    else{
+    	     	mergecolmHdr = mergecolmHdr+" ,gwspp as \"Pressure\",gwstt AS \"Dry Bulb Temperature\",gwstd AS \"Dew Bulb Temperature\",gwstmax AS \"Maximum Temperature\",gwstmin AS \"Minimum Temperature\",gwscc AS \"Total Cloud Cover\",gwsvv AS \"Visibility\",gwsws AS \"Wind Speed\",gwswd AS \"Wind Direction\",gwsrain24 AS \"24 Hours Precipitation\",gwsww AS \"Present Weather\"";        	    
+    	    }    		
     	    
 	    con = connect.getConnection();
 	    PreparedStatement pstmt;
-	    System.out.println("SELECT "+mergecolmHdr+",to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') , "+mergecolmHdrdata+"FROM ("+SQL_SEL_GWS_GRID+strbuilder+" ) AS results ORDER BY gwsdat,\"Country\",\"Station\",\"Lattitude\",\"Lontitude\" ");
-	    pstmt = con.prepareStatement("SELECT "+mergecolmHdr+",to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') , "+mergecolmHdrdata+"FROM ("+SQL_SEL_GWS_GRID+strbuilder+" ) AS results ORDER BY gwsdat,\"Country\",\"Station\",\"Lattitude\",\"Lontitude\" " );
-	    ResultSet rs = pstmt.executeQuery();
-	    SSQADM004 sub = null;
-	    while(rs.next())
-	    {
-	    	int i = 0;
-	        sub = new SSQADM004();
-	        sub.setGwsval(rs.getString(1)+"\n");
-	        if (i == 0) {
-	        	sub.setGenDate(rs.getString(2));
-	        	sub.setColumHdr(rs.getString(3));
-			}
-	        list.add(sub);
-	        i++;
-	    }
+	    System.out.println("COPY (SELECT "+mergecolmHdr+" FROM ("+SQL_SEL_GWS_GRID+strbuilder+" ) AS results ORDER BY gwsdat,\"Country\",\"Station\",\"Lattitude\",\"Lontitude\" ) TO '"+fileName+"' WITH CSV HEADER");
+	    pstmt = con.prepareStatement("COPY (SELECT "+mergecolmHdr+" FROM ("+SQL_SEL_GWS_GRID+strbuilder+" ) AS results ORDER BY gwsdat,\"Country\",\"Station\",\"Lattitude\",\"Lontitude\" ) TO '"+fileName+"' WITH CSV HEADER");
+	    pstmt.execute();
 	    
 	    con.close();
 	    pstmt.close();
-	    rs.close();
 		
 		return list;	
 	}

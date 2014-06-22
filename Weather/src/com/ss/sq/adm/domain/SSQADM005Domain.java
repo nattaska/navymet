@@ -137,7 +137,7 @@ public PagingGridData findWantnDetail(SSQADM005 ssqadm) throws SQLException{
 		return pagingGridData;	
 	}
 
-public  List<SSQADM005> genWantnDetail(SSQADM005 ssqadm) throws SQLException{
+public  List<SSQADM005> genWantnDetail(SSQADM005 ssqadm, String fileName) throws SQLException{
 	
 	List<SSQADM005> list = new ArrayList<SSQADM005>();
 	String startDate = ssqadm.getStartDate();
@@ -179,38 +179,21 @@ public  List<SSQADM005> genWantnDetail(SSQADM005 ssqadm) throws SQLException{
 		}
 		
 		List<SSQADM005> colmn  = extratColumforGenerate(ssqadm);
+		List<SSQADM005> colmnHdr  = extratColumforGenerateHdr(ssqadm);
 	    String mergecolm = "";
-	    String mergecolmHdr= "";
 	    for(int i=0; i<=colmn.size()-1;i++){		    	
-	    	mergecolm = mergecolm+" ||\',\'|| COALESCE("+colmn.get(i).getStation()+",0)"; 	
+	    	mergecolm = mergecolm+" , COALESCE("+colmn.get(i).getStation()+",0) AS \"" +colmnHdr.get(i).getColumHdr()+"\""; 	
 	    }
-	    List<SSQADM005> colmnHdr  = extratColumforGenerateHdr(ssqadm);
-	    for(int i=0; i<=colmnHdr.size()-1;i++){		    	
-	    	mergecolmHdr = mergecolmHdr+" ||\',\'|| "+colmnHdr.get(i).getColumHdr(); 	
-	    }
+	    
 	con = null;
     con = connect.getConnection();
     PreparedStatement pstmt;	
-    System.out.println("SELECT wamdat||','||wamlat||','||wamlon"+mergecolm+"||'\n',to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') ,'Date Time'||','||'Latitude'||','||'Longtitude'"+mergecolmHdr+strbuilder+ " ORDER BY wamdat , wamlat , wamlon");
-    pstmt = con.prepareStatement("SELECT wamdat||','||wamlat||','||wamlon"+mergecolm+"||'\n',to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') ,'Date Time'||','||'Latitude'||','||'Longtitude'"+mergecolmHdr+strbuilder+ " ORDER BY wamdat , wamlat , wamlon");
-    ResultSet rs = pstmt.executeQuery();
-    SSQADM005 sub = null;
-    while(rs.next())
-    {
-    	int i = 0;
-        sub = new SSQADM005();
-        sub.setWamval(rs.getString(1));
-        if (i == 0) {
-        	sub.setGenDate(rs.getString(2));
-        	sub.setColumHdr(rs.getString(3));
-		}
-        list.add(sub);
-        i++;
-    }
+    System.out.println("COPY (SELECT wamdat AS \"Date Time\" , wamlat AS \"Latitude\",wamlon AS \"Longtitude\""+mergecolm+strbuilder+ " ORDER BY \"Date Time\" , \"Latitude\" , \"Longtitude\") TO '"+fileName+"' WITH CSV HEADER");
+    pstmt = con.prepareStatement("COPY (SELECT wamdat AS \"Date Time\" , wamlat AS \"Latitude\",wamlon AS \"Longtitude\""+mergecolm+strbuilder+ " ORDER BY \"Date Time\" , \"Latitude\" , \"Longtitude\") TO '"+fileName+"' WITH CSV HEADER");
+    pstmt.execute();
     
     con.close();
     pstmt.close();
-    rs.close();
 	
 	return list;	
 	}

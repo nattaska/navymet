@@ -1,6 +1,7 @@
 package com.ss.sq.adm.controller;
 
-import java.io.OutputStream;
+import java.io.FileInputStream;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.fission.web.view.extjs.form.FormData;
 import com.fission.web.view.extjs.grid.GridData;
 import com.ss.sq.adm.domain.SSQADM003;
 import com.ss.sq.adm.domain.SSQADM003Domain;
+import com.ss.sq.resource.GenFileConstants;
 import com.ss.sq.util.BeanUtils;
 
 @Controller
@@ -274,33 +276,31 @@ public class SSQADM003Controller {
 		ssqadm.setLowLatitide(calllatitude);
 		ssqadm.setLeftLongtitude(calllongtitude);
 		ssqadm.setRightLongtitude(calrlongtitude);
-
-		List<SSQADM003> data = domain.genSwstnDetail(ssqadm);
-		
 		String fileName = "";
 
-		 if(!data.isEmpty()){
-			fileName = name+data.get(0).getGenDate();
-		}
-		 else{
-			fileName = name+System.currentTimeMillis();
-		}
-		response.setContentType("application/ms-excel"); // or you can use text/csv
-		response.setHeader("Content-Disposition", "attachment; filename="+fileName+".csv"); 
-		StringBuilder strbuilder=new StringBuilder();
-		try {
-		    // Write the header line
-		    OutputStream out = response.getOutputStream();
-		    String header = data.get(0).getColumHdr()+"\n";
-		    out.write(header.getBytes());
-		    // Write the content
-		    if(!data.isEmpty()){
-			    for(int i=0; i<=data.size()-1;i++){
-			     strbuilder.append(data.get(i).getSwsval());
-			     }
-			    out.write(strbuilder.toString().getBytes());
-		    }
-		    out.flush();
+		fileName = name+System.currentTimeMillis()+".csv";
+		
+		domain.genSwstnDetail(ssqadm,GenFileConstants.filepath+fileName);
+
+			try {
+			    
+				response.setContentType("text/html");  
+				PrintWriter out = response.getWriter();  
+ 
+				response.setContentType("APPLICATION/OCTET-STREAM");   
+				response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\"");   
+				  
+				FileInputStream fileInputStream = new FileInputStream(GenFileConstants.filepath + fileName);  
+				            
+				int i;   
+				while ((i=fileInputStream.read()) != -1) {  
+				out.write(i);   
+				}   
+				fileInputStream.close();   
+				out.close();   
+				
+			    System.out.println("File downloaded at client successfully");
+			    
 		    domain.updateHis(name,fileName,"2");
 		} catch (Exception e) {
 		  e.printStackTrace();

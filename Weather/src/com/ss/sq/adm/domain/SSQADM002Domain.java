@@ -25,6 +25,8 @@ public class SSQADM002Domain extends SSQADM002 {
 	String SQL_SEL_LOC_STATION = "SELECT pmdentcd,pmdldesc FROM prmdtl WHERE pmdtbno = 6 order by pmdentcd ";
 	String SQL_SEL_AWSTN_DTL = "SELECT awstn.awsdattm, prmdtl.pmdedesc AS station ,(select 	pmdedesc from prmdtl where prmdtl.pmdtbno='1' and prmdtl.pmdentcd=awstn.awsprm) ,awstn.awsval AS VALUE ,COUNT (*) OVER (PARTITION BY 'X') cnt_all,row_number() over(ORDER BY awsdattm , prmdtl.pmdedesc , pmdedesc) as rec ,to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') " +
 			"FROM awstn JOIN prmdtl ON awstn.awsstnno::TEXT = prmdtl.pmdentcd::TEXT AND prmdtl.pmdtbno in (6) ";
+	String SQL_GEN_AWSTN_DTL = "SELECT awstn.awsdattm, prmdtl.pmdedesc AS station ,(select 	pmdedesc from prmdtl where prmdtl.pmdtbno='1' and prmdtl.pmdentcd=awstn.awsprm) AS Valiable ,awstn.awsval AS VALUE " +
+			"FROM awstn JOIN prmdtl ON awstn.awsstnno::TEXT = prmdtl.pmdentcd::TEXT AND prmdtl.pmdtbno in (6) ";
 
 
 	public StoreData findValiableStoreData() throws SQLException{
@@ -147,7 +149,7 @@ public class SSQADM002Domain extends SSQADM002 {
 	return pagingGridData;	
 	}
 	
-	public List<SSQADM002> genAwstnDetail(SSQADM002 ssqadm) throws SQLException{
+	public List<SSQADM002> genAwstnDetail(SSQADM002 ssqadm, String fileName) throws SQLException{
 		
 		List<SSQADM002> list = new ArrayList<SSQADM002>();
 	    con = connect.getConnection();
@@ -163,7 +165,7 @@ public class SSQADM002Domain extends SSQADM002 {
 				if(!BeanUtils.isEmpty(ssqadm.getEndTime())){
 					endDate = ssqadm.getFinishDate().concat(" "+ssqadm.getEndTime());
 				}
-				else{
+				else if(BeanUtils.isEmpty(ssqadm.getEndTime()) && !BeanUtils.isEmpty(ssqadm.getFinishDate())){
 					endDate = ssqadm.getFinishDate().concat(" 23:59");
 				}       
 				if(!BeanUtils.isEmpty(startDate)){
@@ -175,29 +177,12 @@ public class SSQADM002Domain extends SSQADM002 {
 	    		if(!BeanUtils.isEmpty(ssqadm.getTime())){
 	    			strbuilder.append(" AND awsdattm::TIME in ("+ssqadm.getTime()+") ");
 	    		}
-	    System.out.println("SELECT * FROM ("+SQL_SEL_AWSTN_DTL+strbuilder+" ) AS results ORDER BY awsdattm , station , pmdedesc ");
-	    pstmt = con.prepareStatement("SELECT * FROM ("+SQL_SEL_AWSTN_DTL+strbuilder+" ) AS results ORDER BY awsdattm , station , pmdedesc ");
-	    ResultSet rs = pstmt.executeQuery();
-	    
-	    SSQADM002 sub = null;
-	    while(rs.next())
-	    {
-	    	int i = 0;
-	        sub = new SSQADM002();
-	        sub.setAwsdattm(rs.getString(1));
-	        sub.setStation(rs.getString(2));
-	        sub.setAwsprm(rs.getString(3));	        
-	        sub.setAwsval(rs.getString(4));
-	        if (i == 0) {
-				sub.setGenDate(rs.getString(7));
-			}
-	        list.add(sub);
-	        i++;
-	    }
+	    System.out.println("COPY (SELECT * FROM ("+SQL_GEN_AWSTN_DTL+strbuilder+" ) AS results ORDER BY awsdattm , station , pmdedesc) TO '"+fileName+"' WITH CSV HEADER");
+	    pstmt = con.prepareStatement("COPY (SELECT * FROM ("+SQL_GEN_AWSTN_DTL+strbuilder+" ) AS results ORDER BY awsdattm , station , Valiable) TO '"+fileName+"' WITH CSV HEADER");
+	    pstmt.execute();
 	    
 	    con.close();
 	    pstmt.close();
-	    rs.close();
 		return list;	
 		}
 

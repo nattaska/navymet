@@ -21,7 +21,7 @@ public class SSQADM003Domain extends SSQADM003 {
 
 	String SQL_SEL_VAL = "SELECT pmdentcd,pmdldesc FROM prmdtl WHERE pmdtbno = 2 order by pmdentcd ";
 	String SQL_SEL_SWS_GRID = "SELECT swsdat,swslat,swslon,swspp,swstt,swstw,swstd,swsuu,swscc,swstmax,swstmin,swsr,swsvv,swsrain24,COUNT (*) OVER (PARTITION BY 'X') cnt_all,row_number() over(ORDER BY swsdat , swslat , swslon) as rec FROM sws ";
-	String SQL_GEN_HDR = "select ''''||pmdedesc||'''' from prmdtl where pmdtbno=2 and pmdentcd ";
+	String SQL_GEN_HDR = "select pmdedesc from prmdtl where pmdtbno=2 and pmdentcd ";
 	String SQL_GEN_COLUM = "select pmdv1 from prmdtl where pmdtbno=2 and pmdentcd ";
 
 
@@ -139,7 +139,7 @@ public class SSQADM003Domain extends SSQADM003 {
 		return pagingGridData;	
 		}
 	
-public  List<SSQADM003> genSwstnDetail(SSQADM003 ssqadm) throws SQLException{
+public  List<SSQADM003> genSwstnDetail(SSQADM003 ssqadm, String fileName) throws SQLException{
 		
 		List<SSQADM003> list = new ArrayList<SSQADM003>();
 		String startDate = ssqadm.getStartDate();
@@ -153,7 +153,7 @@ public  List<SSQADM003> genSwstnDetail(SSQADM003 ssqadm) throws SQLException{
 			if(!BeanUtils.isEmpty(ssqadm.getEndTime())){
 				endDate = ssqadm.getFinishDate().concat(" "+ssqadm.getEndTime());
 			}
-			else{
+			else if(BeanUtils.isEmpty(ssqadm.getEndTime()) && !BeanUtils.isEmpty(ssqadm.getFinishDate())){
 				endDate = ssqadm.getFinishDate().concat(" 23:59");
 			} 
 		
@@ -181,38 +181,21 @@ public  List<SSQADM003> genSwstnDetail(SSQADM003 ssqadm) throws SQLException{
 			}
 			
 			List<SSQADM003> colmn  = extratColumforGenerate(ssqadm);
+			List<SSQADM003> colmnHdr  = extratColumforGenerateHdr(ssqadm);
 		    String mergecolm = "";
-		    String mergecolmHdr= "";
 		    for(int i=0; i<=colmn.size()-1;i++){		    	
-		    	mergecolm = mergecolm+" ||\',\'|| COALESCE("+colmn.get(i).getStation()+",0)"; 	
+		    	mergecolm = mergecolm+", COALESCE("+colmn.get(i).getStation()+",0) AS \""+colmnHdr.get(i).getColumHdr()+"\""; 	
 		    }
-		    List<SSQADM003> colmnHdr  = extratColumforGenerateHdr(ssqadm);
-		    for(int i=0; i<=colmnHdr.size()-1;i++){		    	
-		    	mergecolmHdr = mergecolmHdr+" ||\',\'|| "+colmnHdr.get(i).getColumHdr(); 	
-		    }
+
 		con = null;
 	    con = connect.getConnection();
 	    PreparedStatement pstmt;	
-	    System.out.println("SELECT swsdat||','||swslat||','||swslon"+mergecolm+"||'\n',to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') ,'Date Time'||','||'Latitude'||','||'Longtitude'"+mergecolmHdr+strbuilder+ " ORDER BY swsdat , swslat , swslon");
-	    pstmt = con.prepareStatement("SELECT swsdat||','||swslat||','||swslon"+mergecolm+"||'\n',to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') ,'Date Time'||','||'Latitude'||','||'Longtitude'"+mergecolmHdr+strbuilder +" ORDER BY swsdat , swslat , swslon");
-	    ResultSet rs = pstmt.executeQuery();
-	    SSQADM003 sub = null;
-	    while(rs.next())
-	    {
-	    	int i = 0;
-	        sub = new SSQADM003();
-	        sub.setSwsval(rs.getString(1));
-	        if (i == 0) {
-	        	sub.setGenDate(rs.getString(2));
-	        	sub.setColumHdr(rs.getString(3));
-			}
-	        list.add(sub);
-	        i++;
-	    }
+	    System.out.println("COPY (SELECT swsdat as \"Date Time\",swslat as \"Latitude\",swslon as \"Longtitude\""+mergecolm+strbuilder+" ORDER BY swsdat , swslat , swslon) TO '"+fileName+"' WITH CSV HEADER");
+	    pstmt = con.prepareStatement("COPY (SELECT swsdat as \"Date Time\",swslat as \"Latitude\",swslon as \"Longtitude\""+mergecolm+strbuilder+" ORDER BY swsdat , swslat , swslon) TO '"+fileName+"' WITH CSV HEADER");
+	    pstmt.execute();
 	    
 	    con.close();
 	    pstmt.close();
-	    rs.close();
 		
 		return list;	
 		}

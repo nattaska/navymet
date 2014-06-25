@@ -25,7 +25,7 @@ public class SSQADM002Domain extends SSQADM002 {
 	String SQL_SEL_LOC_STATION = "SELECT pmdentcd,pmdldesc FROM prmdtl WHERE pmdtbno = 6 order by pmdentcd ";
 	String SQL_SEL_AWSTN_DTL = "SELECT awstn.awsdattm, prmdtl.pmdedesc AS station ,(select 	pmdedesc from prmdtl where prmdtl.pmdtbno='1' and prmdtl.pmdentcd=awstn.awsprm) ,awstn.awsval AS VALUE ,COUNT (*) OVER (PARTITION BY 'X') cnt_all,row_number() over(ORDER BY awsdattm , prmdtl.pmdedesc , pmdedesc) as rec ,to_char(CURRENT_TIMESTAMP,'FMYYYYMMDDHH24MI') " +
 			"FROM awstn JOIN prmdtl ON awstn.awsstnno::TEXT = prmdtl.pmdentcd::TEXT AND prmdtl.pmdtbno in (6) ";
-	String SQL_GEN_AWSTN_DTL = "SELECT awstn.awsdattm, prmdtl.pmdedesc AS station ,(select 	pmdedesc from prmdtl where prmdtl.pmdtbno='1' and prmdtl.pmdentcd=awstn.awsprm) AS Valiable ,awstn.awsval AS VALUE " +
+	String SQL_GEN_AWSTN_DTL = "SELECT awstn.awsdattm as \"Date Time\", prmdtl.pmdedesc AS station ,(select 	pmdedesc from prmdtl where prmdtl.pmdtbno='1' and prmdtl.pmdentcd=awstn.awsprm) AS Valiable ,awstn.awsval AS VALUE " +
 			"FROM awstn JOIN prmdtl ON awstn.awsstnno::TEXT = prmdtl.pmdentcd::TEXT AND prmdtl.pmdtbno in (6) ";
 
 

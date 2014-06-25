@@ -254,7 +254,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'wavht',
-		   header: 'Wave Height',
+		   header: 'Wave Height [m]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -262,7 +262,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'wavdir',
-		   header: 'Wave Direction',
+		   header: 'Wave Direction [deg]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -270,7 +270,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'winspd',
-		   header: 'Wind Speed',
+		   header: 'Wind Speed [m/sec]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -278,7 +278,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'frcvlc',
-		   header: 'Friction Velocity',
+		   header: 'Friction Velocity [m/sec]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -286,7 +286,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'windir',
-		   header: 'Wind Direction',
+		   header: 'Wind Direction [deg]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -294,7 +294,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'wavmean',
-		   header: 'Average Period',
+		   header: 'Average Period [sec]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -302,7 +302,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'wavpeak',
-		   header: 'Peak Period',
+		   header: 'Peak Period [sec]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -318,7 +318,7 @@ Ext.onReady(function(){
 		   width: 35,
 		   align: 'center',
 		   dataIndex: 'wavstr',
-		   header: 'Wave Stress',
+		   header: 'Wave Stress [kg/m.sec^2]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   }

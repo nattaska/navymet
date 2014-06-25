@@ -22,7 +22,8 @@ public class SSQADM005Domain extends SSQADM002 {
 	String SQL_SEL_VAL = "SELECT pmdentcd,pmdldesc FROM prmdtl WHERE pmdtbno = 3 order by pmdentcd ";
 	String SQL_SEL_WAM_GRID = "SELECT wamdat,wamlat,wamlon,wamwavht,wamwavdir,wamwinspd,wamfrcvlc,wamwindir,wamwavmean,wamwavpeak,wamdragcoef,wamwavstr,COUNT (*) OVER (PARTITION BY 'X') cnt_all,row_number() over(ORDER BY wamdat,wamlat,wamlon) as rec FROM wam ";
 	String SQL_GEN_COLUM = "select pmdv1 from prmdtl where pmdtbno=3 and pmdentcd ";
-	String SQL_GEN_HDR = "select ''''||pmdedesc||'''' from prmdtl where pmdtbno=3 and pmdentcd ";
+//	String SQL_GEN_HDR = "select ''''||pmdedesc||'''' from prmdtl where pmdtbno=3 and pmdentcd ";
+	String SQL_GEN_HDR = "select pmdedesc from prmdtl where pmdtbno=3 and pmdentcd ";
 	
 
 	public StoreData findValiableStoreData() throws SQLException{

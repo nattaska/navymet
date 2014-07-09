@@ -252,7 +252,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'pp',
-		   header: 'Pressure',
+		   header: 'Pressure [hPa]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -260,7 +260,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'tt',
-		   header: 'Dry Bulb Temperature',
+		   header: 'Dry Bulb Temperature [°C]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -268,7 +268,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'tw',
-		   header: 'Wet Bulb Temperature',
+		   header: 'Wet Bulb Temperature [°C]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -276,7 +276,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'td',
-		   header: 'Dew Bulb Temperature',
+		   header: 'Dew Bulb Temperature [°C]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -284,7 +284,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'uu',
-		   header: 'Relative Humidity',
+		   header: 'Relative Humidity [%]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -300,7 +300,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'tmax',
-		   header: 'Maximum Temperature',
+		   header: 'Maximum Temperature [°C]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -308,7 +308,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'tmin',
-		   header: 'Minimum Temperature',
+		   header: 'Minimum Temperature [°C]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -316,7 +316,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'sr',
-		   header: '3 Hours Precipitation',
+		   header: '3 Hours Precipitation [mm.]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -324,7 +324,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'vv',
-		   header: 'Visibility',
+		   header: 'Visibility [km.]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   },{
@@ -332,7 +332,7 @@ Ext.onReady(function(){
 		   width: 25,
 		   align: 'center',
 		   dataIndex: 'rain24',
-		   header: '24 Hours Precipitation',
+		   header: '24 Hours Precipitation [mm.]',
 		   menuDisabled: true,
 		   xtype: 'gridcolumn'
 	   }
